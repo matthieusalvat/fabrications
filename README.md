@@ -26,7 +26,7 @@ class: full-inv, center
 background-position: center;
 background-image:  linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(https://user-images.githubusercontent.com/16662847/44794123-16318680-aba8-11e8-8910-fae8577d0b5f.jpg)
 
-# [OoRoBoT](https://github.com/Orange-OpenSource/oorobot/blob/master/README.md)
+# [OoRoBoT](https://github.com/Orange-OpenSource/oorobot/)
 
 Un robot éducatif à construire soi-même
 
@@ -39,7 +39,7 @@ class: full, center
 background-position: center;
 background-image:  linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(https://user-images.githubusercontent.com/16662847/86014605-d7c5b680-ba20-11ea-9023-f9b0c5f15df4.jpg)
 
-## [Bornes d'arcades](./arcade/README.md)
+## [Bornes d'arcades](./arcade/)
 
 Plans pour écran 19'' et 22''
 
@@ -53,7 +53,7 @@ background-position: center;
 background-image:  linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(https://user-images.githubusercontent.com/16662847/84521258-04fe2f00-acd5-11ea-946c-9813b765e3af.jpeg)
 
 
-## [YT-1300](./YT-1300/README.md)
+## [YT-1300](./YT-1300/)
 
 ![YT-1300](https://user-images.githubusercontent.com/16662847/84521258-04fe2f00-acd5-11ea-946c-9813b765e3af.jpeg)
 
@@ -64,7 +64,7 @@ class: full, center
 background-position: center;
 background-image:  linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(https://user-images.githubusercontent.com/16662847/86014764-06dc2800-ba21-11ea-8d8d-7feb70530d6e.jpeg)
 
-## [Cadres lumineux](./cadres-lumineux/README.md)
+## [Cadres lumineux](./cadres-lumineux/)
 
 ![carrera](https://user-images.githubusercontent.com/16662847/86014756-05126480-ba21-11ea-9df2-ae9194681662.jpeg)
 
@@ -77,7 +77,7 @@ class: full, center
 background-position: center;
 background-image:  linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(https://user-images.githubusercontent.com/16662847/86014838-1fe4d900-ba21-11ea-8005-a06f529f11a9.jpeg)
 
-## [Puzzle prénoms](./puzzle-prenoms/README.md)
+## [Puzzle prénoms](./puzzle-prenoms/)
 
 ![puzzle1](https://user-images.githubusercontent.com/16662847/86014838-1fe4d900-ba21-11ea-8005-a06f529f11a9.jpeg)
 
@@ -88,7 +88,7 @@ class: full-inv, center
 background-position: center;
 background-image:  linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(https://user-images.githubusercontent.com/16662847/86014893-325f1280-ba21-11ea-86c6-4ec9e4d48af6.jpeg)
 
-## [Décorations de Noël](./decos-noel/README.md)
+## [Décorations de Noël](./decos-noel/)
 
 ![decos](https://user-images.githubusercontent.com/16662847/86014893-325f1280-ba21-11ea-86c6-4ec9e4d48af6.jpeg)
 
@@ -99,7 +99,7 @@ class: full, center
 background-position: center;
 background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(https://user-images.githubusercontent.com/16662847/86015021-591d4900-ba21-11ea-9255-5cba8d66772b.jpg)
 
-## [Lampes en bocal](./lampes-bocaux/README.md)
+## [Lampes en bocal](./lampes-bocaux/)
 
 ![lampe](https://user-images.githubusercontent.com/16662847/86015021-591d4900-ba21-11ea-9255-5cba8d66772b.jpg)
 
@@ -110,7 +110,7 @@ class: full-inv, center
 background-position: center;
 background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(https://user-images.githubusercontent.com/16662847/86015073-6a665580-ba21-11ea-9f8e-8bfc394f5fef.jpg)
 
-## [Lampes en découpe laser](./lampes-decoupes/README.md)
+## [Lampes en découpe laser](./lampes-decoupes/)
 
 ![renne](https://user-images.githubusercontent.com/16662847/86015073-6a665580-ba21-11ea-9f8e-8bfc394f5fef.jpg)
 
@@ -123,7 +123,7 @@ class: full-inv, center
 background-position: center;
 background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(https://user-images.githubusercontent.com/16662847/86015241-984b9a00-ba21-11ea-813d-2915d656f8b8.jpg)
 
-## [Skylines](./skylines/README.md)
+## [Skylines](./skylines/)
 
 Liste des villes disponibles :
 - Brest (même)
