@@ -8,15 +8,6 @@
 	<script src="https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://unpkg.com/normalize.css@8.0.0/normalize.css">
-	<script> 
-	showdown.setFlavor('github');
-	$.get("README.md", data => {
-	  const converter = new showdown.Converter(),
-		text      = data,
-		html      = converter.makeHtml(text);
-	  $("#mdcontent").html(html);
-	});
-	</script>
 	<style>
 	body {
 	  background-color: #eee;
@@ -71,7 +62,7 @@
 	  padding: 0.5em 0.5em 0.5em 0.5em;
 	  margin:0px;
 	}
-	#mdcontent img {
+	#mdcontent img, #mdcontent video {
 	  max-width: 100%;
 	  width: 600px;
 	  display: block;
@@ -84,4 +75,19 @@
 	<div id="gh-link"><a href="https://github.com/matthieusalvat/fabrications/k40/">Contribuer<br/>sur GitHub</a></div>
 	<div id="mdcontent"></div>
   </body>
+  <script> 
+  showdown.setFlavor('github');
+  $.get("README.md", text => {
+	const converter = new showdown.Converter();
+	let  html = converter.makeHtml(text);
+	console.log(html);
+	html=html.replace(/<a\s+[^>]*>([^<]*)<\/a>/g, (m) => {
+	  if (h=m.match(/href="(.*\.mp4)"/)) {
+ 		return `<video controls loop autoplay><source src="${h[1]}" type="video/mp4"></video>`;
+	  }
+	  return m;
+	});
+	$("#mdcontent").html(html);
+  });
+  </script>
 </html>

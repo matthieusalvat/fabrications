@@ -61,8 +61,7 @@ Le compresseur vibre beaucoup, il faut donc le fixer le sur la table. J'ai chois
 
 La machine dispose d'un trou d'évacuation des petits déchets de découpe sous le plateau, j'ai ajouté un [petit cendrier](cendrier.svg) afin de récupérer ces déchets facilement :
 
-https://user-images.githubusercontent.com/16662847/114201337-607d6580-9956-11eb-9700-58dc4b250e55.mp4
-
+https://user-images.githubusercontent.com/16662847/114205646-cec42700-995a-11eb-98aa-3888ad821dc5.mp4
 
 
 ## Ajout de la buse d'air et du pointeur laser
