@@ -12,7 +12,7 @@ Définition des icones :
 - ![decoupe](https://user-images.githubusercontent.com/16662847/86017381-43f5e980-ba24-11ea-985e-9415e3ffe92d.png) l'objet a été fabriqué avec la découpe laser du FabLab de Lannion
 - ![3D](https://user-images.githubusercontent.com/16662847/86017353-3d677200-ba24-11ea-8206-158fc9703a9a.png) l'objet a au moins une pièce réalisée en impression 3D
 - ![220v](https://user-images.githubusercontent.com/16662847/86017368-40626280-ba24-11ea-880b-99afdebbe47f.png) la construction de l'objet nécessite de travailler avec du 220V
-- ![5v](https://user-images.githubusercontent.com/16662847/86017360-3e989f00-ba24-11ea-82ed-7a2f25767dfb.png) la construction de l'objet se limite à travailler avec du 5V
+- ![5v](https://user-images.githubusercontent.com/16662847/86017360-3e989f00-ba24-11ea-82ed-7a2f25767dfb.png) la construction de l'objet utilise des basses tensions (5V ou 12V)
 - ![arduino](https://user-images.githubusercontent.com/16662847/86017374-41938f80-ba24-11ea-819d-fe6076c51616.png) l'objet contient un Arduino
 - ![esp](https://user-images.githubusercontent.com/16662847/86017392-46584380-ba24-11ea-975b-2c961e2733e7.png) l'objet contient un ESP
 - ![raspberry](https://user-images.githubusercontent.com/16662847/86017400-49533400-ba24-11ea-9649-5c285af2cd8f.png) l'objet contient un Raspberry Pi
@@ -20,6 +20,17 @@ Définition des icones :
 - ![wifi](https://user-images.githubusercontent.com/16662847/86017403-4b1cf780-ba24-11ea-8a0c-451d75ba28ed.png) l'objet est pilotable en wifi
 - ![ir](https://user-images.githubusercontent.com/16662847/86017394-48220700-ba24-11ea-9d10-126999702bd6.png) l'objet est pilotable en infrarouge (télécommande)
 
+
+---
+class: full-inv, center
+background-position: center;
+background-image:  linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(https://user-images.githubusercontent.com/16662847/114190958-3161f680-994c-11eb-944c-c4a09a0359f8.jpeg)
+
+# [Découpeuse laser K40](./k40/)
+
+Description des modifications apportées sur ma K40
+
+.icon[![220v](https://user-images.githubusercontent.com/16662847/86017368-40626280-ba24-11ea-880b-99afdebbe47f.png)![5v](https://user-images.githubusercontent.com/16662847/86017360-3e989f00-ba24-11ea-82ed-7a2f25767dfb.png)![arduino](https://user-images.githubusercontent.com/16662847/86017374-41938f80-ba24-11ea-819d-fe6076c51616.png)![decoupe](https://user-images.githubusercontent.com/16662847/86017381-43f5e980-ba24-11ea-985e-9415e3ffe92d.png)]
 
 ---
 class: full-inv, center
@@ -103,7 +114,7 @@ background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(h
 
 ![lampe](https://user-images.githubusercontent.com/16662847/86015021-591d4900-ba21-11ea-9255-5cba8d66772b.jpg)
 
-.icon[![220v](https://user-images.githubusercontent.com/16662847/86017368-40626280-ba24-11ea-880b-99afdebbe47f.png))![decoupe](https://user-images.githubusercontent.com/16662847/86017381-43f5e980-ba24-11ea-985e-9415e3ffe92d.png)![ir](https://user-images.githubusercontent.com/16662847/86017394-48220700-ba24-11ea-9d10-126999702bd6.png)]
+.icon[![220v](https://user-images.githubusercontent.com/16662847/86017368-40626280-ba24-11ea-880b-99afdebbe47f.png)![decoupe](https://user-images.githubusercontent.com/16662847/86017381-43f5e980-ba24-11ea-985e-9415e3ffe92d.png)![ir](https://user-images.githubusercontent.com/16662847/86017394-48220700-ba24-11ea-9d10-126999702bd6.png)]
 
 ---
 class: full-inv, center

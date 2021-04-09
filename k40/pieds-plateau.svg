@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="126.1mm"
+   height="86.099998mm"
+   viewBox="0 0 126.1 86.099998"
+   version="1.1"
+   id="svg8"
+   sodipodi:docname="pieds-plateau.svg"
+   inkscape:version="1.0.2 (1.0.2+r75+1)">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="249.87701"
+     inkscape:cy="179.57872"
+     inkscape:document-units="mm"
+     inkscape:current-layer="g68"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="3773"
+     inkscape:window-height="1545"
+     inkscape:window-x="67"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0.05,0.05)" />
+  <g
+     inkscape:label="Generic Box"
+     inkscape:groupmode="layer"
+     id="g21"
+     transform="translate(0.05,0.05)" />
+  <g
+     inkscape:label="Generic Box"
+     inkscape:groupmode="layer"
+     id="g44"
+     transform="translate(0.05,0.05)">
+    <g
+       id="g42" />
+  </g>
+  <g
+     inkscape:label="Generic Box"
+     inkscape:groupmode="layer"
+     id="g70"
+     transform="translate(0.05,0.05)">
+    <g
+       id="g68">
+      <path
+         style="fill:none;stroke:#ff0000;stroke-width:0.1"
+         id="Lid_Top"
+         d="m 3,3 h 9.4 V 0 h 5.1 V 3 H 27 v 9.4 h 3 v 5.1 H 27 V 27 h -9.4 v 3 H 12.5 V 27 H 3 V 17.6 H 0 v -5.1 h 3 z" />
+      <path
+         style="fill:none;stroke:#ff0000;stroke-width:0.1"
+         id="Bottom"
+         d="m 35,3 h 9.4 V 0 h 5.1 V 3 H 59 v 9.4 h 3 v 5.1 H 59 V 27 h -9.4 v 3 H 44.5 V 27 H 35 v -9.4 h -3 v -5.1 h 3 z" />
+      <path
+         style="fill:none;stroke:#ff0000;stroke-width:0.1"
+         id="Front"
+         d="m 0,35 v -3 h 3 9.6 v 3 h 4.9 v -3 h 9.5 3 v 3 6.6 h -3 v 4.9 h 3 v 5.1 h -3 v 4.9 h 3 v 5.1 h -3 v 4.9 h 3 v 5.1 h -3 v 4.9 h 3 v 6.5 3 h -3 -9.6 v -3 h -4.9 v 3 H 3 0 V 83 76.4 H 3 V 71.5 H 0 V 66.4 H 3 V 61.5 H 0 V 56.4 H 3 V 51.5 H 0 V 46.4 H 3 V 41.5 H 0 Z" />
+      <path
+         style="fill:none;stroke:#ff0000;stroke-width:0.1"
+         id="Back"
+         d="m 32,35 v -3 h 3 9.6 v 3 h 4.9 v -3 h 9.5 3 v 3 6.6 h -3 v 4.9 h 3 v 5.1 h -3 v 4.9 h 3 v 5.1 h -3 v 4.9 h 3 v 5.1 h -3 v 4.9 h 3 v 6.5 3 h -3 -9.6 v -3 h -4.9 v 3 H 35 32 v -3 -6.6 h 3 v -4.9 h -3 v -5.1 h 3 v -4.9 h -3 v -5.1 h 3 v -4.9 h -3 v -5.1 h 3 v -4.9 h -3 z" />
+      <path
+         id="Left"
+         style="fill:none;stroke:#ff0000;stroke-width:0.377953"
+         d="m 241.86133,46.123047 v 74.822263 h 11.36719 v 11.33789 24.56641 h -11.3379 v 19.27734 h 11.3379 v 18.51953 h -11.3379 v 19.2754 h 11.3379 v 18.51953 h -11.3379 v 19.27539 h 11.3379 v 18.51953 h -11.3379 v 19.27539 h 11.3379 v 24.18945 11.33789 h 35.90625 v -11.33789 h 18.51953 v 11.33789 h 36.2832 v -11.33789 -24.5664 h 11.33789 V 269.85742 H 343.9375 v -18.51953 h 11.33789 V 232.0625 H 343.9375 v -18.51953 h 11.33789 V 194.26758 H 343.9375 v -18.51953 h 11.33789 V 156.47266 H 343.9375 V 132.2832 120.94531 h 11.30859 V 46.123047 Z m 47.65039,74.822263 h 18.51953 v 11.33789 h -18.51953 z"
+         transform="scale(0.26458333)" />
+      <path
+         style="fill:none;stroke:#ff0000;stroke-width:0.1"
+         id="Right"
+         d="m 99,35 v -3 h 9.6 v 3 h 4.9 v -3 h 9.5 v 3 6.4 h 3 v 5.1 h -3 v 4.9 h 3 v 5.1 h -3 v 4.9 h 3 v 5.1 h -3 v 4.9 h 3 v 5.1 h -3 v 6.5 3 h -9.6 v -3 h -4.9 v 3 H 99 v -3 -6.4 h -3 v -5.1 h 3 v -4.9 h -3 v -5.1 h 3 v -4.9 h -3 v -5.1 h 3 v -4.9 h -3 v -5.1 h 3 z" />
+      <rect
+         style="fill:none;stroke:#ff0000;stroke-width:0.1"
+         id="rect2824"
+         width="5.1000004"
+         height="3"
+         x="12.299999"
+         y="75.099998" />
+      <rect
+         style="fill:none;stroke:#ff0000;stroke-width:0.1"
+         id="rect2824-1"
+         width="5.1000004"
+         height="3"
+         x="44.299999"
+         y="75.099998" />
+      <rect
+         style="fill:none;stroke:#ff0000;stroke-width:0.1"
+         id="rect2824-1-2"
+         width="5.1000004"
+         height="3"
+         x="76.300201"
+         y="75.100098" />
+      <rect
+         style="fill:none;stroke:#ff0000;stroke-width:0.1"
+         id="rect2824-1-6"
+         width="5.1000004"
+         height="3"
+         x="108.29999"
+         y="75.099998" />
+      <path
+         style="fill:none;stroke:#ff0000;stroke-width:0.1"
+         id="Bottom-0"
+         d="m 99,3 h 9.4 V 0 h 5.1 v 3 h 9.5 v 9.399998 h 3 v 5.1 h -3 v 9.5 h -9.4 v 3 h -5.1 v -3 H 99 v -9.4 h -3 v -5.1 h 3 z" />
+    </g>
+  </g>
+</svg>
