@@ -74,7 +74,7 @@ Utiliser des vis M3 (5mm ou 8mm de longueur) pour fixer le petit support de la b
 
 Vous trouverez le modèle de mon support pour les pointeurs et la buse [ici](support-laser-air.svg) (le modèle a évolué depuis la prise de la photo) :
 
-![support-air-laser1](https://user-images.githubusercontent.com/16662847/114190976-34f57d80-994c-11eb-9a08-3e4da63d4c41.jpeg)
+![support-air-laser1](https://user-images.githubusercontent.com/16662847/114276020-229b4280-9a25-11eb-83a2-aafc63c80066.jpeg)
 
 
 ## Remplacement de la sonde de température
