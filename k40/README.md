@@ -79,7 +79,12 @@ Vous trouverez le modèle de mon support pour les pointeurs et la buse [ici](sup
 
 ## Remplacement de la sonde de température
 
-L'avantage de la sonde choisie est qu'elle comporte un système visuel permettant de voir l'eau circuler jusqu'au laser. Sa taille est compatible avec l'emplacement prévu pour l'afficheur intégré dans le modèle d'origine, il suffit d'alimenter l'afficheur en 12V (grâce à l'adapateur 220V/12V) :
+
+L'avantage de la sonde choisie est qu'elle comporte un système visuel permettant de voir l'eau circuler jusqu'au laser :
+
+https://user-images.githubusercontent.com/16662847/114275709-ce439300-9a23-11eb-8984-9d4ce9c8f302.mp4
+
+. Sa taille est compatible avec l'emplacement prévu pour l'afficheur intégré dans le modèle d'origine, il suffit d'alimenter l'afficheur en 12V (grâce à l'adapateur 220V/12V) :
 
 ![temp](https://user-images.githubusercontent.com/16662847/114190979-3626aa80-994c-11eb-8ee7-53d82481c01a.jpeg)
 

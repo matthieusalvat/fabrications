@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Amélioration de ma K40</title>
+	<title></title>
 	<script src="https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://unpkg.com/normalize.css@8.0.0/normalize.css">
@@ -15,22 +15,22 @@
 	  width:100%;
 	}
 	body a {
-	  color: #006680;
+	  color: #406fa0;
 	  font-weight: bold;
 	}
 	h1 {
-	  background-color: #006680;
+	  background-color: #406fa0;
 	  width: 100%;
 	  padding: 0px;
-	  padding-top: 20px;
-	  padding-bottom: 20px;
+	  padding-top: 40px;
+	  padding-bottom: 40px;
 	  margin: 0px;
 	  color: white;
 	  text-align:center;
 	}
 	h2 {
-	  border-bottom: 1px solid #006680;
-	  border-top: 1px solid #006680;
+	  border-bottom: 1px solid #406fa0;
+	  border-top: 1px solid #406fa0;
 	  width:100%;
 	}
 	#gh-link a {
@@ -44,22 +44,21 @@
 	  text-align: center;
 	  right: -3em;
 	  border: 2px solid white;
-	  background-color: #006680;
+	  background-color: #406fa0;
 	  font-weight: bold;
 	  transform: rotate(45deg);
 	}
 
 	#mdcontent {
-	  padding: 0px;
 	  padding-bottom: 20px;
-	  border-left: 4px solid #006680;
-	  border-right: 4px solid #006680;
+	  border-left: 4px solid #406fa0;
+	  border-right: 4px solid #406fa0;
 	  background-color: white;
 	  margin: auto;
 	  max-width: 1280px;
 	}
 	#mdcontent p {
-	  padding: 0.5em 0.5em 0.5em 0.5em;
+	  padding: 5px;
 	  margin:0px;
 	}
 	#mdcontent img, #mdcontent video {
@@ -68,22 +67,57 @@
 	  display: block;
       margin-left: auto;
       margin-right: auto;
-	}	
+	}
+
+	@media screen and (max-width: 800px) {
+	  #gh-link {
+		position: unset;
+		width: 100%;
+		border: 0px;
+		border-bottom: 2px solid white;
+		transform: none;
+	  }
+	  h1 {
+		padding-top: 20px;
+		padding-bottom: 20px;
+	  }
+	}
+	  
 	</style>
   </head>
   <body>
-	<div id="gh-link"><a href="https://github.com/matthieusalvat/fabrications/k40/">Contribuer<br/>sur GitHub</a></div>
+	<div id="gh-link"><a href="">Contribuer<br/>sur GitHub</a></div>
 	<div id="mdcontent"></div>
   </body>
   <script> 
   showdown.setFlavor('github');
+  // Get REAMDE.md
   $.get("README.md", text => {
 	const converter = new showdown.Converter();
 	let  html = converter.makeHtml(text);
-	console.log(html);
+	// Retrieve github repository URL from current URL
+	if (u=window.location.hostname.match(/^(.*)\.github\.io$/)) {
+	  // split path into array and remove empty elements
+	  const parts = window.location.pathname.split('/').filter(n => n);
+	  // first element represent the repository name
+	  const repo = parts.shift();
+	  let githubURL=`${window.location.protocol}//github.com/${u[1]}/${repo}`;
+	  if (parts.length>0) {
+		githubURL+=`/tree/master/${parts.join('/')}`;
+	  }
+	  $("#gh-link a").attr("href", githubURL);
+	} 
+	// search main document title (h1) to set site title
+	let m;
+	if (m = html.match(/<h1[^>]*>([^<]*)<\/h1>/i)) {
+	  document.title=m[1];
+	}
+	// Search all links
 	html=html.replace(/<a\s+[^>]*>([^<]*)<\/a>/g, (m) => {
+	  // For video link, replace it by a video tag
+	  let h;
 	  if (h=m.match(/href="(.*\.mp4)"/)) {
- 		return `<video controls loop autoplay><source src="${h[1]}" type="video/mp4"></video>`;
+ 		return `<video controls loop muted autoplay><source src="${h[1]}" type="video/mp4"></video>`;
 	  }
 	  return m;
 	});
