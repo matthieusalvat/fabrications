@@ -94,7 +94,7 @@ https://user-images.githubusercontent.com/16662847/114275709-ce439300-9a23-11eb-
 https://user-images.githubusercontent.com/16662847/114202091-2791c080-9957-11eb-8f84-98a51ab9961c.mp4
 
 
-Le code permettant d'émuler l'appui sur les touches CTRL+<fléches> se trouve [ici](k40_ctlr_button). Il faut un Arduino Pro Micro (ou un autre Arduino basé sur le mini-contrôleur ATmega32U4). Le modèle de ma boite se trouve [ici](). Les 4 boutons principaux permettent de bouger le chariot sur les axes X et Y, le cinquième bouton permet de revenir à l'origine machine (Home). A terme j'aimerais pouvoir lancer la fonction de vérification de l'emprise de la découpe (mais cela nécessite de modifier le code de K40 Whisperer).
+Le code permettant d'émuler l'appui sur les touches CTRL+<fléches> se trouve [ici](k40_ctlr_button/k40_ctlr_button.ino). Il faut un Arduino Pro Micro (ou un autre Arduino basé sur le mini-contrôleur ATmega32U4). Le modèle de ma boite se trouve [ici](boitier-controle.svg). Les 4 boutons principaux permettent de bouger le chariot sur les axes X et Y, le cinquième bouton permet de revenir à l'origine machine (Home). A terme j'aimerais pouvoir lancer la fonction de vérification de l'emprise de la découpe (mais cela nécessite de modifier le code de K40 Whisperer).
 
 ![controle1](https://user-images.githubusercontent.com/16662847/114190950-2f983300-994c-11eb-93d0-61715c1a2e10.jpeg)
 
