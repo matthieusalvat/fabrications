@@ -72,7 +72,7 @@ Faire passer le câble d'alimentation des pointeurs laser et le tube d'air dans 
 
 Utiliser des vis M3 (5mm ou 8mm de longueur) pour fixer le petit support de la buse et régler les pointeurs lasers. Attention, selon le matériau (PMMA, MDF, contreplaqué...) il faudra peut-être changer la taille des trous de fixation des vis M3 (vis utilisées pour fixer les composants dans une tour de PC) pour que ces dernières puissent s'assembler correctement (faire des tests avant de découper l'ensemble). Le modèle est prévu pour être découpé sur une plaque de 3mm d'épaisseur.
 
-Vous trouverez le modèle de mon support pour les pointeurs et la buse [ici](support-laser-air.svg) (le modèle a évolué depuis la prise de la photo) :
+Vous trouverez le modèle de mon support pour les pointeurs et la buse [ici](support-laser-air.svg) (le modèle a beaucoup évolué depuis la prise de la photo) :
 
 ![support-air-laser1](https://user-images.githubusercontent.com/16662847/114276020-229b4280-9a25-11eb-83a2-aafc63c80066.jpeg)
 
@@ -94,7 +94,7 @@ https://user-images.githubusercontent.com/16662847/114275709-ce439300-9a23-11eb-
 https://user-images.githubusercontent.com/16662847/114202091-2791c080-9957-11eb-8f84-98a51ab9961c.mp4
 
 
-Le code permettant d'émuler l'appui sur les touches CTRL+<fléches> se trouve [ici](k40_ctlr_button/k40_ctlr_button.ino). Il faut un Arduino Pro Micro (ou un autre Arduino basé sur le mini-contrôleur ATmega32U4). Le modèle de ma boite se trouve [ici](boitier-controle.svg). Les 4 boutons principaux permettent de bouger le chariot sur les axes X et Y, le cinquième bouton permet de revenir à l'origine machine (Home). A terme j'aimerais pouvoir lancer la fonction de vérification de l'emprise de la découpe (mais cela nécessite de modifier le code de K40 Whisperer).
+Le code permettant d'émuler l'appui sur les touches CTRL+&lt;flèches&gt; se trouve [ici](k40_ctlr_button/k40_ctlr_button.ino). Il faut un Arduino Pro Micro (ou un autre Arduino basé sur le mini-contrôleur ATmega32U4). Le modèle de ma boite se trouve [ici](boitier-controle.svg). Les 4 boutons principaux permettent de bouger le chariot sur les axes X et Y, le cinquième bouton permet de revenir à l'origine machine (Home). A terme j'aimerais pouvoir lancer la fonction de vérification de l'emprise de la découpe (mais cela nécessite de modifier le code de K40 Whisperer).
 
 ![controle1](https://user-images.githubusercontent.com/16662847/114190950-2f983300-994c-11eb-93d0-61715c1a2e10.jpeg)
 
