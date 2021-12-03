@@ -1,4 +1,4 @@
-===== Une horloge à mots (wordclock) =====
+# Une horloge à mots (wordclock)
 
 Basé sur l'idée des [QLockTwo](http://qlocktwo.com/touch.php?lang=fr).
 
