@@ -36,6 +36,9 @@ Outillage :
 
 ## Version pour écran 19''
 
+![arcade_v2](https://user-images.githubusercontent.com/16662847/155139068-2fffe80b-8d61-4e63-b28b-ba7e4c2d7797.jpg)
+
+
 [Le fichier SVG](arcade.svg) pour faire des modifications.
 
 [Le fichier DXF](arcade.dxf) pour la découpeuse laser. Comme indiqué sur le fichier SVG, les couleurs correspondents à :
