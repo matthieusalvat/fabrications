@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>GG</title>
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <script type='text/javascript' src='https://cdn.jsdelivr.net/npm/webcom@3.4.0/webcom.js'></script>
+    <script src="https://www.tetoki.eu/asciiart/p5/p5.min.js"></script>
+    <style>
+      .fullscreen {
+	  position:absolute;
+	  left:0;
+	  right:0;
+	  margin: auto;
+	  width:auto;
+	  height:100%;
+      }
+
+      .options {
+	  position: absolute;
+	  background-color: white;
+	  border: 1px solid black;
+	  top: 0px;
+	  width: auto;
+	  z-index:100;
+	  right: 10px;
+	  padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      new Vue({
+	  el: '#app',
+	  data: function () {
+              return {
+		  error: "",
+		  launched: false,
+		  initialized: false,
+		  screenId: "",
+		  auth: null,
+		  'modes': ['number', 'square', 'round'],
+		  'widths': [150, 120, 90, 60],
+		  'sizes': [10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40],
+		  'charactersList': ["0123456789", "01234567890ABCDEF", "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"],
+		  'colors': ["White", "Silver", "Gray", "Black", "Red", "Maroon", "Yellow", "Olive", "Lime", "Green", "Aqua", "Teal", "Blue", "Navy", "Fuchsia", "Purple"],
+
+              }
+	  },
+	  template: '\
+       <div>\
+         <div>\
+           <div v-if="auth && initialized">\
+             <div v-if="launched">\
+           <table>\
+             <tr>\
+               <td>Contrast<td></td><select v-model="options.contrast" v-on:change="saveOptions"><option v-for="i in 25">{{i*10}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Mode<td></td><select v-model="options.mode" v-on:change="saveOptions"><option v-for="mode in modes">{{mode}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Width<td></td><select v-model="options.width" v-on:change="saveOptions"><option v-for="width in widths">{{width}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Size<td></td><select v-model="options.size" v-on:change="saveOptions"><option v-for="size in sizes">{{size}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Frame/s<td></td><select v-model="options.frame" v-on:change="saveOptions"><option v-for="i in 30">{{i}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Characters<td></td><select v-model="options.characters" v-on:change="saveOptions"><option v-for="characters in charactersList">{{characters}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Background<td></td><select v-model="options.background" v-on:change="saveOptions"><option v-for="color in colors">{{color}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Foreground<td></td><select v-model="options.foreground" v-on:change="saveOptions"><option v-for="color in colors">{{color}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td><label>Reverse<td></td><input type="checkbox" v-model="options.reverse" v-on:change="saveOptions"></label></td>\
+             </tr>\
+             <tr>\
+               <td><label>Debug<td></td><input type="checkbox" v-model="options.debug" v-on:change="saveOptions"></label></td>\
+             </tr>\
+             <tr>\
+               <td><label>Mirror<td></td><input type="checkbox" v-model="options.mirror" v-on:change="saveOptions"></label></td>\
+             </tr>\
+           </table>\
+             </div>\
+             <div v-else>\
+               <input type="text" v-model="screenId" size="20">\
+               <button v-on:click="connectScreen">Take control</button>\
+             </div>\
+           </div>\
+           <div v-else class="spinner-border" role="status">\
+              <span class="visually-hidden">Loading...</span>\
+           </div>\
+         </div>\
+       </div>\
+       ',
+	  mounted: function() {
+	  },
+	  created: function () {
+              const app = Webcom.App("dmatth");
+	      const searchParams = new URLSearchParams(window.location.search);
+	      if (searchParams.has('s')) {
+		  this.screenId = searchParams.get('s');
+	      }
+              Vue.prototype.$db = app.serverlessDb.rootNode.relativeNode('gg');
+              Vue.prototype.$auth = app.authentication;
+              Vue.prototype.$auth.subscribe((error, authState) => {
+		  if (error) {
+		      // catch error here
+		      console.log("Authentication error: ", error);
+		  } else {
+		      if (authState.state !== "some") {
+			  // if auth is null, the user is not yet connected
+			  console.log("Disconnected");
+			  // call guest auth method to log user, this method will recall the auth callback at the end
+			  Vue.prototype.$auth.signInAsGuest();
+		      } else {
+			  // Webcom SDK have found a auth token
+			  // We can start the app
+			  this.auth=authState;
+			  this.initialized=true;
+			  if (this.screenId) {
+			      this.connectScreen();
+			  }
+		      }
+		  }
+	      });
+	  },
+	  methods: {
+	      connectScreen() {
+		  this.$db.relativeNode("devices").relativeNode(this.screenId).relativeNode("config").subscribe(Webcom.Event.ValueChange, Webcom.Callback(s => {
+		      const options = s.val();
+		      if (!this.launched) {
+			  this.launched=true;
+		      }
+		      this.options = options;
+		  }));
+	      },
+	      saveOptions() {
+		  console.log("saveOptions", this.options);
+		  this.options.width=parseInt(this.options.width);
+		  this.options.size=parseInt(this.options.size);
+		  this.options.frame=parseInt(this.options.frame);
+		  this.options.contrast=parseInt(this.options.contrast);
+		  this.options.height=this.options.width*2/3;
+		  this.$db.relativeNode("devices").relativeNode(this.screenId).relativeNode("config").set(this.options);
+	      },
+	  }
+      });
+      
+    </script>
+  </body>
+</html>
+

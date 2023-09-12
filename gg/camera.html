@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>GG</title>
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <script type='text/javascript' src='https://cdn.jsdelivr.net/npm/webcom@3.4.0/webcom.js'></script>
+    <script src="https://www.tetoki.eu/asciiart/p5/p5.min.js"></script>
+    <style>
+      .fullscreen {
+	  position:absolute;
+	  left:0;
+	  right:0;
+	  margin: auto;
+	  width:auto;
+	  height:100%;
+      }
+
+      .options {
+	  position: absolute;
+	  background-color: white;
+	  border: 1px solid black;
+	  top: 0px;
+	  width: auto;
+	  z-index:100;
+	  right: 10px;
+	  padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+
+      Vue.component('screen', {
+	  props: ['auth', 'screenId', 'stream'],
+	  data: function () {
+              return {
+		  'config': null,
+		  'options': {
+		      frame: 30,
+		      size: 16,
+		      contrast: 100,
+		      mode: 'square',
+		  },
+		  'lastFrame': '',
+		  'frames':0,
+		  'modes': ['number', 'square', 'round'],
+		  'widths': [150, 120, 90, 60],
+		  'sizes': [10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40],
+		  'charactersList': ["0123456789", "01234567890ABCDEF", "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"],
+		  'colors': ["White", "Silver", "Gray", "Black", "Red", "Maroon", "Yellow", "Olive", "Lime", "Green", "Aqua", "Teal", "Blue", "Navy", "Fuchsia", "Purple"],
+		  'camera': null,
+		  'playing': false,
+		  'renderTimer': null,
+		  'inputContext': null,
+		  'initialized': false,
+		  'outputContext': null,
+		  'fullscreen': false,
+		  'optionsVisible': false,
+              };
+	  },
+	  template: '\
+       <div>\
+         <div class="options" v-if="initialized" v-show="optionsVisible">\
+           <table>\
+             <tr>\
+               <td>Contrast<td></td><select v-model="options.contrast" v-on:change="saveOptions"><option v-for="i in 25">{{i*10}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Mode<td></td><select v-model="options.mode" v-on:change="saveOptions"><option v-for="mode in modes">{{mode}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Width<td></td><select v-model="options.width" v-on:change="saveOptions"><option v-for="width in widths">{{width}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Size<td></td><select v-model="options.size" v-on:change="saveOptions"><option v-for="size in sizes">{{size}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Frame/s<td></td><select v-model="options.frame" v-on:change="saveOptions"><option v-for="i in 30">{{i}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Characters<td></td><select v-model="options.characters" v-on:change="saveOptions"><option v-for="characters in charactersList">{{characters}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Background<td></td><select v-model="options.background" v-on:change="saveOptions"><option v-for="color in colors">{{color}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Foreground<td></td><select v-model="options.foreground" v-on:change="saveOptions"><option v-for="color in colors">{{color}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td><label>Reverse<td></td><input type="checkbox" v-model="options.reverse" v-on:change="saveOptions"></label></td>\
+             </tr>\
+             <tr>\
+               <td><label>Debug<td></td><input type="checkbox" v-model="options.debug" v-on:change="saveOptions"></label></td>\
+             </tr>\
+             <tr>\
+               <td><label>Mirror<td></td><input type="checkbox" v-model="options.mirror" v-on:change="saveOptions"></label></td>\
+             </tr>\
+             <tr>\
+               <td><label>Playing<td></td><input type="checkbox" v-model="playing" v-on:change="toggle"></label></td>\
+             </tr>\
+           </table>\
+         </div>\
+         <div>\
+           <canvas style="display: none" ref="input"></canvas>\
+           <canvas ref="output" class="fullscreen" @click="toggleOptions"></canvas>\
+         </div>\
+       </div>\
+       ',
+	  created: function () {
+	  },
+	  mounted: function() {
+	      this.inputContext = this.$refs.input.getContext('2d');
+	      this.outputContext = this.$refs.output.getContext('2d');
+	      
+	      this.camera = document.createElement("video");
+	      this.camera.setAttribute('playsinline', 'true');
+	      this.camera.setAttribute('webkit-playsinline', 'true');
+	      this.$db.relativeNode("devices").relativeNode(this.screenId).relativeNode("config").subscribe(Webcom.Event.ValueChange, Webcom.Callback(s => {
+		  const options = s.val();
+		  //if (this.options.width !== options.width) {
+		  console.log("change width", this.options.width,  options.width);
+		  this.camera.setAttribute('width', options.width);
+		  this.$refs.input.setAttribute('width', options.width);
+		  this.$refs.output.setAttribute('width', options.width*options.size);
+		  //}
+		  //if (this.options.height !== options.height) {
+		  console.log("change height", this.options.height,  options.height);
+		  this.camera.setAttribute('height', options.height);
+		  this.$refs.input.setAttribute('height', options.height);
+		  this.$refs.output.setAttribute('height',options.height*options.size);
+		  this.lastFrame='';
+		  
+		  //}
+		  if (options.mirror) {
+		      console.log("change mirror", this.options.mirror,  options.mirror);
+		      this.inputContext.translate(options.width, 0);
+		      this.inputContext.scale(-1, 1);
+		  }
+		  if (!this.initialized) {
+		      this.play();
+		      this.initialized=true;
+		  }
+		  this.options = options;
+	      }));
+	      if (this.camera.mozSrcObject !== undefined) {
+		  this.camera.mozSrcObject = this.stream;
+	      } else {
+		  this.camera.srcObject = this.stream;
+	      }
+	  },
+	  methods: {
+	      saveOptions() {
+		  console.log("saveOptions", this.options);
+		  this.options.width=parseInt(this.options.width);
+		  this.options.size=parseInt(this.options.size);
+		  this.options.frame=parseInt(this.options.frame);
+		  this.options.contrast=parseInt(this.options.contrast);
+		  this.options.height=this.options.width*2/3;
+		  this.$db.relativeNode("devices").relativeNode(this.screenId).relativeNode("config").set(this.options);
+	      },
+	      toggle() {
+		  if (this.playing) {
+		      this.pause();
+		  } else {
+		      this.play();
+		  }
+	      },
+	      toggleOptions() {
+		  this.optionsVisible = !this.optionsVisible;
+	      },
+              play() {
+		  console.log("play", this.camera, this.camera.width, this.camera.height, this.inputContext);
+		  this.camera.play();
+		  this.playing=true;
+		  this.renderTimer = setInterval(() => {
+	              try {
+			  this.inputContext.drawImage(this.camera, 0, 0, this.camera.width, this.camera.height);
+			  this.onFrame();
+	              } catch (e) {
+			  console.log(e);
+			  // TODO
+	              }
+		  }, Math.round(1000 / this.options.frame));
+		  
+              },
+              onFrame() {
+		  const characters = this.options.characters;
+		  const contrastFactor = (259 * (this.options.contrast + 255)) / (255 * (259 - this.options.contrast));
+		  const imageData = this.inputContext.getImageData(0, 0, this.options.width, this.options.height);
+		  const size = this.options.size;
+		  let asciiCharacters = [];
+		  const background=this.options.background;
+		  document.body.style.backgroundColor=this.options.background;
+		  const foreground=this.options.foreground;
+		  this.outputContext.fillStyle = background;
+		  this.outputContext.fillRect(0, 0, this.options.width*size, this.options.height*size);
+		  let i=0;
+		  for (let y = 0; y < this.options.height; y += 1) {
+	              for (let x = 0; x < this.options.width; x += 1) {
+			  const offset = (y * this.options.width + x) * 4;
+			  const color = this.getColorAtOffset(imageData.data, offset);
+			  const contrastedColor = {
+		              red: this.bound(Math.floor((color.red - 128) * contrastFactor) + 128, [0, 255]),
+		              green: this.bound(Math.floor((color.green - 128) * contrastFactor) + 128, [0, 255]),
+		              blue: this.bound(Math.floor((color.blue - 128) * contrastFactor) + 128, [0, 255]),
+		              alpha: color.alpha
+			  };
+                    let brightness=((0.299 * contrastedColor.red + 0.587 * contrastedColor.green + 0.114 * contrastedColor.blue) / 255);
+                    if (this.options.reverse) {
+                      brightness = 1 - brightness;
+                    }
+			  const realIndex = parseInt(brightness * (characters.length-1));
+			  let index=realIndex;
+			  if (this.frames!==0 || (this.lastFrame && this.lastFrame[i]!==null)) {
+			      index = Math.ceil((realIndex*2+this.lastFrame[i])/3)
+			      //index = Math.ceil(realIndex, this.lastFrame[i]);
+			      //index = realIndex<this.lastFrame[i] ? this.lastFrame[i] : realIndex;
+			  }
+			  //const character = characters[characters.length - 1) - Math.round(brightness * (characters.length - 1))];
+			  const character = characters[index];
+			  //console.log(index, character);
+			  if (this.options.debug) {
+			      //this.outputContext.fillRect(0, 0, this.options.width**24, this.options.height);
+			      this.outputContext.fillStyle = `rgb(${color.red},${color.green},${color.blue})`;
+			      this.outputContext.fillRect(x*2, y*2, 2, 2);
+			      this.outputContext.fillStyle = `rgb(${contrastedColor.red},${contrastedColor.green},${contrastedColor.blue})`;
+			      this.outputContext.fillRect(x*2+this.options.width*2, y*2, 2, 2);
+			      this.outputContext.fillStyle = `rgb(${brightness*255},${brightness*255},${brightness*255})`;
+			      this.outputContext.fillRect(x*2+this.options.width*4, y*2, 2, 2);
+			      const cc = parseInt((index+1) * 255 / characters.length);
+			      this.outputContext.fillStyle = `rgb(${cc},${cc},${cc})`;
+			      this.outputContext.fillRect(x*2+this.options.width*6, y*2, 2, 2);
+			  }
+			  this.outputContext.fillStyle = foreground;
+			  this.outputContext.strokeStyle = foreground;
+			  this.outputContext.lineWidth = 1;
+			  if (this.options.mode==="number") {
+			      if (Math.abs(index-this.lastFrame[i])>1 && index>5) {
+				  this.outputContext.font = `${4+index}px bold monospace`;
+				  //this.outputContext.font = `${12 + parseInt(character/2)}px monospace`;
+				  //this.outputContext.fillStyle = c;//"white";
+				  //this.outputContext.strokeStyle = c;//"white";
+				  this.outputContext.lineWidth = 2;
+				  this.outputContext.strokeText(character, x*size, 10+(y*size));
+				  //this.outputContext.font = `${c}px monospace`;
+				  //this.outputContext.strokeText(character, x*size, size+(y*size)+5);
+				  //this.outputContext.fillText(character, x*1+5, size+(y*size)+5);
+			      } else {
+				  //if (Math.abs(character-this.lastFrame[i])<2) {
+				  this.outputContext.font = `${4+index}px monospace`;
+				  //this.outputContext.fillStyle = c; //"white";
+				  //this.outputContext.strokeStyle = c; //"white";
+				  //this.outputContext.font = `12px monospace`;
+				  this.outputContext.fillText(character, x*size, 10+(y*size));
+			      }
+			  } else if (this.options.mode==="square") {
+			      //console.log(x*size, size+(y*size), parseInt(character)+1, parseInt(character)+1);
+			      var c = index+2;
+			      //if (Math.abs(character-this.lastFrame[i])<2) {
+			      if (index>7 || (Math.abs(realIndex-this.lastFrame[i])>1 && index>0)) {
+				  this.outputContext.fillRect(x*size+((size-c)/2), size+(y*size)+((size-c)/2), c, c);
+				  this.outputContext.strokeRect(x*size+((size-c)/2), size+(y*size)+((size-c)/2), c, c);
+			      } else {
+				  this.outputContext.strokeRect(x*size+((size-c)/2), size+(y*size)+((size-c)/2), c, c);
+			      }
+			      //this.outputContext.fillRect(x*size, (y*size), size, size);
+		              //} else {
+			      //this.outputContext.fillRect(x*size, size+(y*size), c+2, c+2);
+			      //this.outputContext.strokeRect(x*size+(c/2), size+(y*size)+(c/2), c+1, c+1);
+			      //}
+			  } else {
+			      this.outputContext.font = `${1 + parseInt(index)*1.2}px monospace`;
+			      //this.outputContext.font = `10px monospace`;
+			      if (Math.abs(index-this.lastFrame[i])>1 && index>5) {
+				  this.outputContext.fillText("⬤", x*size, size+(y*size));
+			      } else {
+				  this.outputContext.strokeText("⬤", x*size, size+(y*size));
+			      }
+			  }
+			  asciiCharacters.push(index);
+			  i++;
+		      }
+		  }
+		  this.lastFrame=asciiCharacters;
+		  //this.frames++;
+		  if (this.frames>30) {
+		      //this.frames=0;
+		  }
+              },
+              bound(value, interval) {
+		  return Math.max(interval[0], Math.min(interval[1], value));
+              },
+              getColorAtOffset(data, offset) {
+		  return {
+	              red: data[offset],
+	              green: data[offset + 1],
+	              blue: data[offset + 2],
+	              alpha: data[offset + 3]
+		  };
+              },
+              pause() {
+		  if (this.renderTimer) clearInterval(this.renderTimer);
+		  this.camera.pause();
+		  this.playing=false;
+
+              },
+              fixColors(rgb) {
+		  const colors = ['#000000','#9D9D9D','#FFFFFF','#BE2633','#E06F8B','#493C2B','#A46422','#EB8931','#F7E26B','#2F484E','#44891A','#A3CE27','#1B2632','#005784','#31A2F2','#B2DCEF'];
+		  var best = 768;
+		  var canvasColor = colors[0];
+		  for (i=0; i< colors.length; i++){
+		      t = 0;
+		      for (j=0; j<3; j++){
+			  t += Math.abs(rgb[j] - parseInt(colors[i].substring(j*2+1,j*2+3), 16));
+		      }
+		      if (t < best){
+			  best = t;
+			  canvasColor = colors[i];
+		      }   
+		  }
+		  return canvasColor;
+              }
+	  }
+      });
+      
+      new Vue({
+	  el: '#app',
+	  data: function () {
+              return {
+		  error: "",
+		  initialized: false,
+		  screenId: "",
+		  launched: false,
+		  cameraReady: false,
+		  auth: null,
+              }
+	  },
+	  template: '\
+       <div>\
+         <div v-if="!cameraReady">\
+            <p>Please authorize camera access !</p>\
+         </div>\
+         <div v-else>\
+           <div v-if="auth && initialized">\
+             <div v-if="launched">\
+               <screen v-bind:auth="auth" v-bind:screenId="screenId" v-bind:stream="stream"></screen>\
+             </div>\
+             <div v-else>\
+               <input type="text" v-model="screenId" size="20">\
+               <button v-on:click="toggleLaunch">Go</button>\
+             </div>\
+           </div>\
+           <div v-else class="spinner-border" role="status">\
+              <span class="visually-hidden">Loading...</span>\
+           </div>\
+         </div>\
+       </div>\
+       ',
+	  mounted: function() {
+	      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+	      window.URL = window.URL || window.webkitURL || window.mozURL || window.msURL;
+	      if (navigator.getUserMedia) {
+		  navigator.getUserMedia({
+		      video: true,
+		      audio: false,
+		  }, (stream) => {
+		      this.stream = stream;
+		      this.cameraReady=true;
+		  }, () => {
+		      console.log('error');
+		  });
+	      } else {
+		  console.log('not supported');
+	      }
+
+	  },
+	  created: function () {
+              const app = Webcom.App("dmatth");
+	      const searchParams = new URLSearchParams(window.location.search);
+	      if (searchParams.has('s')) {
+		  this.screenId = searchParams.get('s');
+	      }
+              Vue.prototype.$db = app.serverlessDb.rootNode.relativeNode('gg');
+              Vue.prototype.$auth = app.authentication;
+              Vue.prototype.$auth.subscribe((error, authState) => {
+		  if (error) {
+		      // catch error here
+		      console.log("Authentication error: ", error);
+		  } else {
+		      if (authState.state !== "some") {
+			  // if auth is null, the user is not yet connected
+			  console.log("Disconnected");
+			  // call guest auth method to log user, this method will recall the auth callback at the end
+			  Vue.prototype.$auth.signInAsGuest();
+		      } else {
+			  // Webcom SDK have found a auth token
+			  // We can start the app
+			  this.auth=authState;
+			  this.initialized=true;
+			  if (this.screenId) {
+			      this.launched=true;
+			  }
+		      }
+		  }
+	      });
+	  },
+	  methods: {
+              toggleLaunch() {
+		  this.launched = !this.launched;
+              }
+	  }
+      });
+      
+    </script>
+  </body>
+</html>
+
