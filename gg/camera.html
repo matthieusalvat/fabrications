@@ -32,7 +32,16 @@
   <body>
     <div id="app"></div>
     <script>
-
+      window.requestAnimFrame = (function() {
+	  return  window.requestAnimationFrame       || 
+	      window.webkitRequestAnimationFrame || 
+	      window.mozRequestAnimationFrame    || 
+	      window.oRequestAnimationFrame      || 
+	      window.msRequestAnimationFrame     || 
+	      function(/* function */ callback, /* DOMElement */ element){
+		  window.setTimeout(callback, 1000 / 30);
+	      };
+      })();
       Vue.component('screen', {
 	  props: ['auth', 'screenId', 'stream'],
 	  data: function () {
@@ -44,10 +53,11 @@
 		      contrast: 100,
 		      mode: 'square',
 		  },
+		  'history': {},
 		  'lastFrame': '',
 		  'frames':0,
 		  'modes': ['number', 'square', 'round'],
-		  'widths': [150, 120, 90, 60],
+		  'widths': [150, 120, 90, 60, 45],
 		  'sizes': [10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40],
 		  'charactersList': ["0123456789", "01234567890ABCDEF", "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"],
 		  'colors': ["White", "Silver", "Gray", "Black", "Red", "Maroon", "Yellow", "Olive", "Lime", "Green", "Aqua", "Teal", "Blue", "Navy", "Fuchsia", "Purple"],
@@ -57,6 +67,8 @@
 		  'inputContext': null,
 		  'initialized': false,
 		  'outputContext': null,
+		  'bufferCanvas': null,
+		  'bufferContext': null,
 		  'fullscreen': false,
 		  'optionsVisible': false,
               };
@@ -90,6 +102,12 @@
                <td>Foreground<td></td><select v-model="options.foreground" v-on:change="saveOptions"><option v-for="color in colors">{{color}}</option></select></td>\
              </tr>\
              <tr>\
+               <td>Skip row<td></td><select v-model="options.skipRow" v-on:change="saveOptions"><option v-for="i in 4">{{i-1}}</option></select></td>\
+             </tr>\
+             <tr>\
+               <td>Skip column<td></td><select v-model="options.skipColumn" v-on:change="saveOptions"><option v-for="i in 4">{{i-1}}</option></select></td>\
+             </tr>\
+             <tr>\
                <td><label>Reverse<td></td><input type="checkbox" v-model="options.reverse" v-on:change="saveOptions"></label></td>\
              </tr>\
              <tr>\
@@ -105,6 +123,7 @@
          </div>\
          <div>\
            <canvas style="display: none" ref="input"></canvas>\
+           <canvas style="display: none" ref="buffer"></canvas>\
            <canvas ref="output" class="fullscreen" @click="toggleOptions"></canvas>\
          </div>\
        </div>\
@@ -114,6 +133,8 @@
 	  mounted: function() {
 	      this.inputContext = this.$refs.input.getContext('2d');
 	      this.outputContext = this.$refs.output.getContext('2d');
+	      this.bufferCanvas  = this.$refs.buffer;
+	      this.bufferContext = this.bufferCanvas.getContext('2d');
 	      
 	      this.camera = document.createElement("video");
 	      this.camera.setAttribute('playsinline', 'true');
@@ -125,12 +146,14 @@
 		  this.camera.setAttribute('width', options.width);
 		  this.$refs.input.setAttribute('width', options.width);
 		  this.$refs.output.setAttribute('width', options.width*options.size);
+		  this.$refs.buffer.setAttribute('width', options.width*options.size);
 		  //}
 		  //if (this.options.height !== options.height) {
 		  console.log("change height", this.options.height,  options.height);
 		  this.camera.setAttribute('height', options.height);
 		  this.$refs.input.setAttribute('height', options.height);
 		  this.$refs.output.setAttribute('height',options.height*options.size);
+		  this.$refs.buffer.setAttribute('height',options.height*options.size);
 		  this.lastFrame='';
 		  
 		  //}
@@ -158,6 +181,8 @@
 		  this.options.size=parseInt(this.options.size);
 		  this.options.frame=parseInt(this.options.frame);
 		  this.options.contrast=parseInt(this.options.contrast);
+		  this.options.skipRow=parseInt(this.options.skipRow || "0");
+		  this.options.skipColumn=parseInt(this.options.skipColumn || "0");
 		  this.options.height=this.options.width*2/3;
 		  this.$db.relativeNode("devices").relativeNode(this.screenId).relativeNode("config").set(this.options);
 	      },
@@ -175,6 +200,7 @@
 		  console.log("play", this.camera, this.camera.width, this.camera.height, this.inputContext);
 		  this.camera.play();
 		  this.playing=true;
+		  /*
 		  this.renderTimer = setInterval(() => {
 	              try {
 			  this.inputContext.drawImage(this.camera, 0, 0, this.camera.width, this.camera.height);
@@ -184,6 +210,17 @@
 			  // TODO
 	              }
 		  }, Math.round(1000 / this.options.frame));
+		  */
+		  const update = () => {
+	              try {
+			  this.inputContext.drawImage(this.camera, 0, 0, this.camera.width, this.camera.height);
+			  this.onFrame();
+			  requestAnimationFrame(update);
+	              } catch (e) {
+			  console.log(e);
+	              }
+		  };
+		  requestAnimationFrame(update);
 		  
               },
               onFrame() {
@@ -193,13 +230,15 @@
 		  const size = this.options.size;
 		  let asciiCharacters = [];
 		  const background=this.options.background;
-		  document.body.style.backgroundColor=this.options.background;
+		  if (document.body.style.backgroundColor!==this.options.background) {
+		      document.body.style.backgroundColor=this.options.background;
+		  }
 		  const foreground=this.options.foreground;
-		  this.outputContext.fillStyle = background;
-		  this.outputContext.fillRect(0, 0, this.options.width*size, this.options.height*size);
+		  this.bufferContext.fillStyle = background;
+		  this.bufferContext.fillRect(0, 0, this.options.width*size, this.options.height*size);
 		  let i=0;
-		  for (let y = 0; y < this.options.height; y += 1) {
-	              for (let x = 0; x < this.options.width; x += 1) {
+		  for (let y = 0; y < this.options.height; y += 1+this.options.skipRow) {
+	              for (let x = 0; x < this.options.width; x += 1+this.options.skipColumn) {
 			  const offset = (y * this.options.width + x) * 4;
 			  const color = this.getColorAtOffset(imageData.data, offset);
 			  const contrastedColor = {
@@ -208,14 +247,14 @@
 		              blue: this.bound(Math.floor((color.blue - 128) * contrastFactor) + 128, [0, 255]),
 		              alpha: color.alpha
 			  };
-                    let brightness=((0.299 * contrastedColor.red + 0.587 * contrastedColor.green + 0.114 * contrastedColor.blue) / 255);
-                    if (this.options.reverse) {
-                      brightness = 1 - brightness;
-                    }
+			  let brightness=((0.299 * contrastedColor.red + 0.587 * contrastedColor.green + 0.114 * contrastedColor.blue) / 255);
+			  if (this.options.reverse) {
+			      brightness = 1 - brightness;
+			  }
 			  const realIndex = parseInt(brightness * (characters.length-1));
 			  let index=realIndex;
 			  if (this.frames!==0 || (this.lastFrame && this.lastFrame[i]!==null)) {
-			      index = Math.ceil((realIndex*2+this.lastFrame[i])/3)
+			      index = Math.ceil((realIndex*4+this.lastFrame[i])/5)
 			      //index = Math.ceil(realIndex, this.lastFrame[i]);
 			      //index = realIndex<this.lastFrame[i] ? this.lastFrame[i] : realIndex;
 			  }
@@ -223,72 +262,85 @@
 			  const character = characters[index];
 			  //console.log(index, character);
 			  if (this.options.debug) {
-			      //this.outputContext.fillRect(0, 0, this.options.width**24, this.options.height);
-			      this.outputContext.fillStyle = `rgb(${color.red},${color.green},${color.blue})`;
-			      this.outputContext.fillRect(x*2, y*2, 2, 2);
-			      this.outputContext.fillStyle = `rgb(${contrastedColor.red},${contrastedColor.green},${contrastedColor.blue})`;
-			      this.outputContext.fillRect(x*2+this.options.width*2, y*2, 2, 2);
-			      this.outputContext.fillStyle = `rgb(${brightness*255},${brightness*255},${brightness*255})`;
-			      this.outputContext.fillRect(x*2+this.options.width*4, y*2, 2, 2);
+			      //this.bufferContext.fillRect(0, 0, this.options.width**24, this.options.height);
+			      this.bufferContext.fillStyle = `rgb(${color.red},${color.green},${color.blue})`;
+			      this.bufferContext.fillRect(x*2, y*2, 2, 2);
+			      this.bufferContext.fillStyle = `rgb(${contrastedColor.red},${contrastedColor.green},${contrastedColor.blue})`;
+			      this.bufferContext.fillRect(x*2+this.options.width*2, y*2, 2, 2);
+			      this.bufferContext.fillStyle = `rgb(${brightness*255},${brightness*255},${brightness*255})`;
+			      this.bufferContext.fillRect(x*2+this.options.width*4, y*2, 2, 2);
 			      const cc = parseInt((index+1) * 255 / characters.length);
-			      this.outputContext.fillStyle = `rgb(${cc},${cc},${cc})`;
-			      this.outputContext.fillRect(x*2+this.options.width*6, y*2, 2, 2);
+			      this.bufferContext.fillStyle = `rgb(${cc},${cc},${cc})`;
+			      this.bufferContext.fillRect(x*2+this.options.width*6, y*2, 2, 2);
 			  }
-			  this.outputContext.fillStyle = foreground;
-			  this.outputContext.strokeStyle = foreground;
-			  this.outputContext.lineWidth = 1;
+			  this.bufferContext.fillStyle = foreground;
+			  this.bufferContext.strokeStyle = foreground;
+			  this.bufferContext.lineWidth = 1;
 			  if (this.options.mode==="number") {
-			      if (Math.abs(index-this.lastFrame[i])>1 && index>5) {
-				  this.outputContext.font = `${4+index}px bold monospace`;
-				  //this.outputContext.font = `${12 + parseInt(character/2)}px monospace`;
-				  //this.outputContext.fillStyle = c;//"white";
-				  //this.outputContext.strokeStyle = c;//"white";
-				  this.outputContext.lineWidth = 2;
-				  this.outputContext.strokeText(character, x*size, 10+(y*size));
-				  //this.outputContext.font = `${c}px monospace`;
-				  //this.outputContext.strokeText(character, x*size, size+(y*size)+5);
-				  //this.outputContext.fillText(character, x*1+5, size+(y*size)+5);
+			      let c = index+2;
+			      if (Math.abs(index-this.lastFrame[i])>1 || history[i]) {
+				  if (!history[i]) {
+				      history[i]=3;
+				  }
+				  history[i]-=1;
+				  //this.bufferContext.font = `${4+index}px bold monospace`;
+				  this.bufferContext.font = `${size*0.6}px monospace`
+				  //this.bufferContext.font = `${12 + parseInt(character/2)}px monospace`;
+				  //this.bufferContext.fillStyle = c;//"white";
+				  //this.bufferContext.strokeStyle = c;//"white";
+				  let h=0
+				  //for (let h=0;h<3;h++) {
+				      this.bufferContext.strokeText(character, (x*size)+c+(h*size), size+(y*size)-c-(h*size));
+				  //}
+
+				  //this.bufferContext.font = `${c}px monospace`;
+				  //this.bufferContext.strokeText(character, x*size, size+(y*size)+5);
+				  //this.bufferContext.fillText(character, x*1+5, size+(y*size)+5);
+				  if (history[i]<=0) {
+				      delete history[i];
+				  }
 			      } else {
+				  this.bufferContext.fillStyle = foreground;
 				  //if (Math.abs(character-this.lastFrame[i])<2) {
-				  this.outputContext.font = `${4+index}px monospace`;
-				  //this.outputContext.fillStyle = c; //"white";
-				  //this.outputContext.strokeStyle = c; //"white";
-				  //this.outputContext.font = `12px monospace`;
-				  this.outputContext.fillText(character, x*size, 10+(y*size));
+				  //this.bufferContext.font = `${4+index}px monospace`;
+				  this.bufferContext.font = `${size*0.6}px monospace`
+				  //this.bufferContext.fillStyle = c; //"white";
+				  //this.bufferContext.strokeStyle = c; //"white";
+				  //this.bufferContext.font = `12px monospace`;
+				  //this.bufferContext.fillText(character, x*size, 10+(y*size));
+				  this.bufferContext.fillText(character, (x*size)+c, size+(y*size)-c);
 			      }
 			  } else if (this.options.mode==="square") {
 			      //console.log(x*size, size+(y*size), parseInt(character)+1, parseInt(character)+1);
 			      var c = index+2;
 			      //if (Math.abs(character-this.lastFrame[i])<2) {
 			      if (index>7 || (Math.abs(realIndex-this.lastFrame[i])>1 && index>0)) {
-				  this.outputContext.fillRect(x*size+((size-c)/2), size+(y*size)+((size-c)/2), c, c);
-				  this.outputContext.strokeRect(x*size+((size-c)/2), size+(y*size)+((size-c)/2), c, c);
+				  this.bufferContext.fillRect(x*size+((size-c)/2), size+(y*size)+((size-c)/2), c, c);
+				  this.bufferContext.strokeRect(x*size+((size-c)/2), size+(y*size)+((size-c)/2), c, c);
 			      } else {
-				  this.outputContext.strokeRect(x*size+((size-c)/2), size+(y*size)+((size-c)/2), c, c);
+				  this.bufferContext.strokeRect(x*size+((size-c)/2), size+(y*size)+((size-c)/2), c, c);
 			      }
-			      //this.outputContext.fillRect(x*size, (y*size), size, size);
+			      //this.bufferContext.fillRect(x*size, (y*size), size, size);
 		              //} else {
-			      //this.outputContext.fillRect(x*size, size+(y*size), c+2, c+2);
-			      //this.outputContext.strokeRect(x*size+(c/2), size+(y*size)+(c/2), c+1, c+1);
+			      //this.bufferContext.fillRect(x*size, size+(y*size), c+2, c+2);
+			      //this.bufferContext.strokeRect(x*size+(c/2), size+(y*size)+(c/2), c+1, c+1);
 			      //}
 			  } else {
-			      this.outputContext.font = `${1 + parseInt(index)*1.2}px monospace`;
-			      //this.outputContext.font = `10px monospace`;
+			      this.bufferContext.font = `${1 + parseInt(index)*1.2}px monospace`;
+			      //this.bufferContext.font = `10px monospace`;
 			      if (Math.abs(index-this.lastFrame[i])>1 && index>5) {
-				  this.outputContext.fillText("⬤", x*size, size+(y*size));
+				  this.bufferContext.fillText("⬤", x*size, size+(y*size));
 			      } else {
-				  this.outputContext.strokeText("⬤", x*size, size+(y*size));
+				  this.bufferContext.strokeText("⬤", x*size, size+(y*size));
 			      }
 			  }
-			  asciiCharacters.push(index);
+			  //asciiCharacters.push(index);
+			  asciiCharacters.push(realIndex);
 			  i++;
 		      }
 		  }
 		  this.lastFrame=asciiCharacters;
-		  //this.frames++;
-		  if (this.frames>30) {
-		      //this.frames=0;
-		  }
+		  this.outputContext.drawImage(this.bufferCanvas, 0, 0);
               },
               bound(value, interval) {
 		  return Math.max(interval[0], Math.min(interval[1], value));
